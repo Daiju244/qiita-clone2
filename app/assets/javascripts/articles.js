@@ -17,5 +17,14 @@ document.addEventListener("turbolinks:load", function(){
       $("#article_thumbnail").on("change", function(e){
           $(".thumbnail").css("background-image",`url(${window.URL.createObjectURL(e.target.files[0])})`);
       })
+        //   17~22行目を追加しました。これらの記述はいずれも「画像の入力欄を増やす」ということが目的です。画像が選ばれてimage_fieldsというクラスが割り当てられたlabel要素に変更がある度に、画像の入力欄が1つずつ増えていきます。
+
+        // 「画像の入力欄」というのはinput要素にtype=fileを指定すると現れる「ファイルを選択　選択されていません」というアレです。articles_new.scssの記述でdisplay:none;にして意図的に非表示にしていますが、これを切ると以下のように表示されます。
+        //   var targetIndex = 0;
+        //   $(`.image_fields`).on("change", function(){
+        //     targetIndex ++;
+        //     $(this).attr("for", `article_images_attributes_${targetIndex}_image`);
+        //     $(this).append(`<input type="file" name="article[images_attributes][${targetIndex}][image]" id="article_images_attributes_${targetIndex}_image">`);
+        //   });
     })
   })

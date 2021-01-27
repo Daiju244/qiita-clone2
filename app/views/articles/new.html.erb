@@ -11,11 +11,12 @@
     </div>
   </div>
   <div class="middle-wrapper">
-    <%= f.text_area :body, class:"body" %>
-    <%= f.text_area :preview, id:"preview", disabled: true %>
+    <%= f.text_area :body, class:"body input-area" %>
+        <div id="preview" class="input-area"></div>
+    <%# <%= f.text_area :preview, id:"preview", disabled: true %>
   </div>
 
-    <%# 19~24行目を追加しました。今までform_withでf.text_fieldやfile_fieldなどを使ってきましたが、ここで新しくfields_forというのが出てきました。これはform_withの中にさらに別モデルのform_withを作る、という感じのことをやっています。大元のform_withではarticleモデルについて取り扱っていましたが、この中でさらにimageモデルを扱う(imagesテーブルに書き込む)ためにこのfields_forというのを使います。 %>
+    <%# 19~24行目を追加しました。今までform_withでf.text_fieldやfile_fieldなどを使ってきましたが、ここで新しくfields_forというのが出てきました。これはform_withの中にさらに別モデルのform_withを作る、という感じのことをやっています。大元のform_withではarticleモデルについて取り扱っていましたが、この中でさらにimageモデルを扱うimagesテーブルに書き込むためにこのfields_forというのを使います。 %>
   <div class="bottom-wrapper">
     <%= f.fields_for :images do |i| %>
         <label class="image_fields">
