@@ -1,0 +1,83 @@
+.top-wrapper{
+  display: flex;
+  padding: 10px 10px 0;
+  label{
+    width: 10%;
+    margin-right: 12px;
+    .thumbnail{
+      width: 100%;
+      height: 150px;
+      color: #666;
+      font-size: 12px;
+      overflow: hidden;
+      line-height: 150px;
+      text-align: center;
+      display: inline-block;
+      border: 1px solid #ddd;
+      background-size: cover;
+      background-color: #f0f0f0;
+      background-position: center center;
+    }
+    input[type="file"]{
+      display: none;
+    }
+  }
+  .input-wrapper{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    input{
+      height: 43px;
+      padding-left: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+    }
+  }
+}
+
+.middle-wrapper{
+  display: flex;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  .input-area{
+    width: 50%;
+    resize: none;
+    padding: 6px;
+    height: 560px;
+    font-size: 16px;
+    overflow: scroll;
+    border: 1px solid #ddd;
+    font-family: -apple-system, "Segoe UI", "Helvetica Neue", "Hiragino Kaku Gothic ProN", メイリオ, meiryo, sans-serif;
+  }
+  .body{
+    margin-right: 10px;
+  }
+  #preview{
+    background-color: white;
+    p{
+      margin: 0;
+    }
+    h1,h2,h3{
+      padding: 0;
+    }
+  }
+}
+
+.bottom-wrapper{
+  display: flex;
+  padding: 0 10px;
+  justify-content: space-between;
+  input[type="submit"],.image-button{
+    padding: 6px;
+    width: 160px;
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    border: 0px solid #000;
+    background-color: #101033;
+  }
+  input[type="file"]{
+      display: none;
+  }
+}

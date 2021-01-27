@@ -24,6 +24,14 @@ gem 'jbuilder', '~> 2.7'
 
 gem "devise"
 
+gem 'sassc'
+gem 'uglifier'
+gem 'jquery-rails'
+gem 'bootstrap'
+
+gem 'redcarpet'
+gem 'rouge'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

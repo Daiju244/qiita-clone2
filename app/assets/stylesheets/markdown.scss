@@ -1,0 +1,157 @@
+h1 {
+    position: relative;
+
+    &::after {
+        left: 0;
+        content: "";
+        height: 2px;
+        width: 100%;
+        bottom: -6px;
+        position: absolute;
+        background-color: #ddd;
+    }
+}
+
+h1,
+h2,
+h3,
+p {
+    color: #333;
+    margin: 14px 0;
+}
+
+h1 {
+    font-size: 30px;
+    padding-top: 60px;
+}
+
+h2 {
+    font-size: 24px;
+    padding-top: 60px;
+}
+
+h3,
+p {
+    font-size: 16px;
+}
+
+code {
+    font-size: 12px;
+}
+
+.highlight {
+    max-width: 520px;
+    padding-top: 20px;
+
+    span {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    background: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    pre {
+        margin: 0;
+        padding: 0;
+        overflow: scroll;
+        white-space: pre;
+        font-size: 0.9em;
+        line-height: 1.5;
+        word-wrap: normal;
+        border-radius: 2px;
+        background: #202020;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+        code {
+            font-size: 1em;
+
+            table.rouge-table {
+                margin: 0;
+                width: 100%;
+
+                td.rouge-code {
+                    padding: 0;
+                    vertical-align: top;
+
+                    pre {
+                        padding: 5px 10px;
+                        line-height: 1.6em;
+                    }
+                }
+
+                td.rouge-gutter {
+                    width: 20px;
+                    padding: 5px;
+                    text-align: right;
+                    vertical-align: top;
+                    background-color: #252526;
+
+                    pre {
+                        color: #aaa;
+                        line-height: 1.6em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.highlight-info {
+    display: none;
+}
+
+.highlight-info+.highlight {
+    margin-top: 0;
+}
+
+.highlight {
+    margin-top: 0;
+    padding-top: 0;
+
+    .c1 {
+        color: #939393;
+    }
+
+    .s1 {
+        color: #bf4c00;
+    }
+
+    .vi,
+    .n,
+    .nl,
+    .p {
+        background: none;
+        color: #dadada;
+    }
+
+    .err {
+        color: #e6db74;
+    }
+
+    .go {
+        cursor: text;
+        color: #dadada;
+    }
+}
+
+.filename {
+    height: 21px;
+    padding: 0 4px;
+    font-size: 9px;
+    color: #dadada;
+    line-height: 21px;
+    display: inline-block;
+    background: #202020;
+    border: 1px solid #aaa;
+    border-radius: 2px 2px 0 0;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+.dashed-area {
+    padding: 6px;
+    margin: 6px 0;
+    display: block;
+    background: #eee;
+    border: 1px dashed #999;
+}

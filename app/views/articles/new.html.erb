@@ -1,33 +1,28 @@
-<h2>Articles#new</h2>
-
 <%= form_with model: @article, url: articles_path do |f| %>
-
-  <div class="field">
-    <%= f.label :thumbnail %><br />
-    <%= f.file_field :thumbnail %>
+  <div class="top-wrapper">
+    <label>
+      <div class="thumbnail">サムネ画像を選択</div>
+      <%= f.file_field :thumbnail, class:"input-thumb" %>
+    </label>
+    <div class="input-wrapper">
+      <%= f.text_field :title,    placeholder: "タイトル" %>
+      <%= f.text_field :abstract, placeholder: "記事概要" %>
+      <%= f.text_field :tag,     placeholder: "タグ" %>
+    </div>
+  </div>
+  <div class="middle-wrapper">
+    <%= f.text_area :body, class:"body" %>
+    <%= f.text_area :preview, id:"preview", disabled: true %>
   </div>
 
-  <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= f.label :abstract %><br />
-    <%= f.text_field :abstract %>
-  </div>
-
-  <div class="field">
-    <%= f.label :tag %><br />
-    <%= f.text_field :tag %>
-  </div>
-
-  <div class="field">
-    <%= f.label :body %><br />
-    <%= f.text_area :body %>
-  </div>
-
-  <div class="actions">
+    <%# 19~24行目を追加しました。今までform_withでf.text_fieldやfile_fieldなどを使ってきましたが、ここで新しくfields_forというのが出てきました。これはform_withの中にさらに別モデルのform_withを作る、という感じのことをやっています。大元のform_withではarticleモデルについて取り扱っていましたが、この中でさらにimageモデルを扱う(imagesテーブルに書き込む)ためにこのfields_forというのを使います。 %>
+  <div class="bottom-wrapper">
+    <%= f.fields_for :images do |i| %>
+        <label class="image_fields">
+            <div class="image-button">画像を挿入</div>
+            <%= i.file_field :image %>
+        </label>
+    <% end %>
     <%= f.submit "投稿する" %>
   </div>
 <% end %>

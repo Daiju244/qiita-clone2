@@ -14,6 +14,11 @@ class ArticlesController < ApplicationController
         render :new
       end
     end
+
+    # この部分でやっているのは「JavaScriptからユーザが入力した内容を受け取る」という部分です。
+    def markdown
+        @body = params[:body]
+    end
   
     private
     def article_params
