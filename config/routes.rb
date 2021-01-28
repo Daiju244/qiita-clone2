@@ -9,7 +9,8 @@ Rails.application.routes.draw do
   end
   $date = Time.now.in_time_zone('Tokyo').to_s
   root "articles#index"
-  resources :articles, only: [:index, :new, :create, :show] do
+  # :editと:updateを追加しました。今回使っていくのはこの2つのアクションです。続けてコントローラを編集します。コードが長くなってきたので、修正箇所のみ記載します。
+  resources :articles, only: [:index, :new, :create, :show, :edit, :update] do
     collection do
       post "markdown"
     end
