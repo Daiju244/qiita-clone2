@@ -1,4 +1,12 @@
 <%# 続いて、app/views/articles/edit.html.erbを新規作成し、以下のように編集しましょう。「編集しましょう」と言いましたが、実はnew.html.erbをただ貼り付けただけです。 %>
+<%# まずは「読み込まれたのがarticlesコントローラのeditアクションだったら」の部分を作ります。edit.html.erbの1行目に以下のような記述を追加しましょう。 %>
+
+<%# 上記画像の青いハイライトが掛かった部分が、さっきのコードで生成されたHTML要素です。headerというidを持つdiv要素に、"articles#edit"と書かれたaction属性が追加されています。これをJavaScript側から参照することで、そのビューがarticlesコントローラのeditアクションであるという情報をJavaScript側に与えることができます。 %>
+
+<%# 続けて、サムネイルの情報についても先ほどのheaderというidを与えたdiv要素の中に与えておきましょう。 %>
+<div id="header" action="<%= "#{controller.controller_name}##{controller.action_name}" %>" <% if "#{controller.controller_name}##{controller.action_name}" == "articles#edit"%>thumbnail ="<%= @article.thumbnail%>"<% end %>></div>
+<%# 少々コードが長くなってしまいましたが、検証ツールで確認するとthumbnail属性にしっかりサムネイルのURLが生成されていることを確認できます。 %>
+
 <%= form_with model: @article, url: articles_path do |f| %>
   <div class="top-wrapper">
     <label>
@@ -19,11 +27,14 @@
 
     <%# 19~24行目を追加しました。今までform_withでf.text_fieldやfile_fieldなどを使ってきましたが、ここで新しくfields_forというのが出てきました。これはform_withの中にさらに別モデルのform_withを作る、という感じのことをやっています。大元のform_withではarticleモデルについて取り扱っていましたが、この中でさらにimageモデルを扱うimagesテーブルに書き込むためにこのfields_forというのを使います。 %>
   <div class="bottom-wrapper">
-    <%= f.fields_for :images do |i| %>
-        <label class="image_fields">
-            <div class="image-button">画像を挿入</div>
-            <%= i.file_field :image %>
-        </label>
+    <%# 先ほどから何度か登場しているこの記述ですが、今回はif文の条件が「articles#new」になっています。editのビューなのに「ビューがnewならば」という条件を書くのは一見意味不明ですよね。単にfields_forを消せばいいだけやんけとツッコミが飛んできそうです。しかしこんな書き方をしているのにも理由があります。実は、このeditの中身をあとで「部分テンプレート」というビューに移し替えて、newとeditで共通の「部分テンプレート」を読み込ませようと考えているからです。「同じようなものは1つのコードで済ませる」というエンジニア界の掟のようなものがあるので、皆さんも徐々に染まっていきましょう。 %>
+    <% if "#{controller.controller_name}##{controller.action_name}" == "articles#new" %>
+        <%= f.fields_for :images do |i| %>
+            <label class="image_fields">
+                <div class="image-button">画像を挿入</div>
+                <%= i.file_field :image %>
+            </label>
+        <% end %>
     <% end %>
     <%= f.submit "投稿する" %>
   </div>

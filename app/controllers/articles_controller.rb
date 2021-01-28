@@ -16,6 +16,30 @@ class ArticlesController < ApplicationController
       end
     end
 
+    # editは、newとは違ってArticle.newや@article.images.newなどは必要ありません。新規作成ではなく編集アクションなので、レコードを新たに生成する必要はないのです。その代わり、すでに存在するレコードを読み込んでおく必要があります。3~5行目の記述で、すでに存在する記事本文の画像を読み込んでいます。
+    def edit
+      @@blob = []
+      @article.images.each.with_index do |a,i|
+        @@blob << "https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/#{a.image.path}/#{@article.images[i].image.filename}"
+      end
+    end
+
+    # createアクションでは@article.saveという記述でレコードを保存しましたが、updateアクションではすでに存在するレコードを更新するための@article.updateという記述を使います。残りはcreateと全て同じです。
+    def update
+      if @article.valid?
+        @article.update(article_params)
+        if @@blob != []
+          @article.images.each.with_index do |a,i|
+            @article.body.gsub!(@@blob[i],"https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/uploads/image/image/#{a.id}/#{@article.images[i].image.filename}")
+            @article.save
+          end
+        end
+        redirect_to root_path
+      else
+        render :new
+      end
+    end
+
     # この部分でやっているのは「JavaScriptからユーザが入力した内容を受け取る」という部分です。
     def markdown
         @body = params[:body]
