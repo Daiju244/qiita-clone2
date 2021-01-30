@@ -1,5 +1,11 @@
 <h2>Articles#show</h2>
 
+<%# 3~6行目を追加しました。お馴染みになってきたif文で、記事投稿者本人が閲覧している場合のみ削除ボタンを表示するように指定しています。また、ついでに編集ボタンも追加しておきました。では早速、削除ボタンを押してみましょう。 %>
+<% if current_user.id == @article.user_id %>
+    <p><%= link_to "記事を編集する", edit_article_path(@article.id) %></p>
+    <p><%= link_to "記事を削除する", article_path, method: "delete" %></p>
+<% end %>
+
 <p>サムネイル:<%= @article.thumbnail%></p>
 <p>タイトル:<%= @article.title%></p>
 <p>概要:<%= @article.abstract%></p>

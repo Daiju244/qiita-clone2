@@ -10,9 +10,11 @@ Rails.application.routes.draw do
   $date = Time.now.in_time_zone('Tokyo').to_s
   root "articles#index"
   # :editと:updateを追加しました。今回使っていくのはこの2つのアクションです。続けてコントローラを編集します。コードが長くなってきたので、修正箇所のみ記載します。
-  resources :articles, only: [:index, :new, :create, :show, :edit, :update] do
+  # :destroyを追加しました。destroyはその名の通りレコードを削除するためのアクションです。これで、Railsに標準で定義されている7つのアクションが出揃いました。ここで、11行目を以下のように修正しましょう。
+  resources :articles do
     collection do
       post "markdown"
+      # post "set_blob"
     end
   end
 end
