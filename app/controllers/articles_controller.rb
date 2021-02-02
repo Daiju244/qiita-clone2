@@ -1,24 +1,40 @@
 class ArticlesController < ApplicationController
     before_action :set_article, only: [:show, :edit, :update, :destroy]
   
+    # 4~5行目はdraftsテーブルに関する新規レコード生成の記述です。そして6行目はcreateの処理を下書き保存の場合と新規投稿の場合で分けるための記述です。では、続けてarticles#newのビューに下書き保存ボタンを追加しましょう。
     def new
       @article = Article.new
     #   @image = @article.images.new
+      @draft = Draft.new
+      @draft.images.new
+      $draft = false
+      $blob = []
     end
   
     def create
-      @article = Article.new(article_params)
+      if $draft
+        targetModel = {main: Draft,   tag: Dtag, inter: TagDraft,   column: {main: "draft_id",   tag: "dtag_id"}, redirect: drafts_path}
+      else
+        targetModel = {main: Article, tag: Tag,  inter: TagArticle, column: {main: "article_id", tag: "tag_id"},  redirect: root_path}
+      end
+      @article = targetModel[:main].new(article_params)
       if @article.valid?
         @article.save
         # redirect_to root_path
       # else
+        # if $blob != []
+        #   @article.images.each.with_index do |a,i|
+        #     @article.body.gsub!($blob[i],"https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/uploads/image/image/#{a.id}/#{@article.images[i].image.filename}")
+        #     @article.save
+        #   end
+        # end
         params[:article][:tag].split(" ").each do |p|
-          unless Tag.find_by(name: p).present?
-            Tag.create(name: p)
+          unless targetModel[:tag].find_by(name: p).present?
+            targetModel[:tag].create(name: p)
           end
-          TagArticle.create(tag_id: Tag.find_by(name: p).id, article_id: @article.id)
+          targetModel[:inter].create(targetModel[:column][:tag] => targetModel[:tag].find_by(name: p).id, targetModel[:column][:main] => @article.id)
         end
-        redirect_to root_path
+        redirect_to targetModel[:redirect]
       else
         render :new
       end
@@ -26,9 +42,9 @@ class ArticlesController < ApplicationController
 
     # editは、newとは違ってArticle.newや@article.images.newなどは必要ありません。新規作成ではなく編集アクションなので、レコードを新たに生成する必要はないのです。その代わり、すでに存在するレコードを読み込んでおく必要があります。3~5行目の記述で、すでに存在する記事本文の画像を読み込んでいます。
     def edit
-      @@blob = []
+      $blob = []
       # @article.images.each.with_index do |a,i|
-      #   @@blob << "https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/#{a.image.path}/#{@article.images[i].image.filename}"
+      #   $blob << "https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/#{a.image.path}/#{@article.images[i].image.filename}"
       # end
       if @article.images.exists?
         @article.images.each.with_index do |a,i|
@@ -47,9 +63,9 @@ class ArticlesController < ApplicationController
       TagArticle.where(article: @article.id).destroy_all
       if @article.valid?
         @article.update(article_params)
-        if @@blob != []
+        if $blob != []
           @article.images.each.with_index do |a,i|
-            @article.body.gsub!(@@blob[i],"https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/uploads/image/image/#{a.id}/#{@article.images[i].image.filename}")
+            @article.body.gsub!($blob[i],"https://s3-ap-northeast-1.amazonaws.com/soeno-blog-app/uploads/image/image/#{a.id}/#{@article.images[i].image.filename}")
             @article.save
           end
         end
@@ -75,11 +91,18 @@ class ArticlesController < ApplicationController
       end
     end
 
+    # 2行目は検索ボックスが空のままsearchアクションが起動されたら、何もしないという意味の記述です。3行目が本体で、.where(...)を使ってarticlesテーブルからレコードを検索するのですが、その条件の指定方法が少し特殊になっています。まず"title LIKE ?"という記述は「titleカラムからあいまい検索をする」という意味になります。あいまい検索とは、単語が部分的に一致していれば「一致した」という判定を与えることです。"%params[:search]%"という部分は、params[:search]で検索をするという意味です。params[:search]は検索ワードであり、このあとform_withでビュー側からこのコントローラに与えます。また、%が両端についているのも「あいまい検索」をするための記述です。
+    def search
+      return nil if params[:search] == ""
+      @articles = Article.where(["title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"])
+  end
+
+
     # この部分でやっているのは「JavaScriptからユーザが入力した内容を受け取る」という部分です。
     def markdown
         @body = params[:body]
     end
-  
+
     private
     def article_params
       params[:article].permit(:title, :thumbnail, :abstract, :body).merge(user_id: current_user.id)

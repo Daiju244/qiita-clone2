@@ -45,5 +45,16 @@ document.addEventListener("turbolinks:load", function(){
         // if($("#header").attr("action") == "articles#edit"){
         //   $(".thumbnail").css("background-image",`url(${$("#header").attr("thumbnail")})`);
         // }
+
+        // 46~53行目を追加しました。まず46行目で下書きボタンのクリックイベントを拾います。下書きボタンがクリックされると、本来であればすぐにフォームが送信され、articles#createが実行されてしまいます。しかし、このままarticles#createが実行されると、記事が投稿されてしまい下書き保存できません。なので、ボタンがクリックされた直後に「フォームの送信を阻止」する必要があります。47行目の「e.preventDefault()」が、フォーム送信を阻止するための記述です。
+        // 48~52行目では非同期通信を使ってset_draftという自作メソッドを実行します。set_draftはまだ定義していませんが、このあと「処理を分岐させるためのメソッド」として作成します。そしてこの実行後、51行目の記述によってフォームを送信します。
+        $("#draft").on("click", function(e){
+          e.preventDefault();
+          $.ajax({
+            url: "/articles/set_draft"
+          }).done(function(){
+            $("#article_form").submit();
+          })
+        })
     })
   })

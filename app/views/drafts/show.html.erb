@@ -1,0 +1,15 @@
+<h2>Drafts#show</h2>
+
+<% if current_user.id == @draft.user_id %>
+  <p><%= link_to "記事を編集する", edit_draft_path(@draft.id) %></p>
+  <p><%= link_to "記事を削除する", draft_path, method:"delete" %></p>
+<% end %>
+<p>タグ:
+  <% TagDraft.where(draft: @draft.id).each do|t| %>
+    <%= t.dtag.name %>
+  <% end %>
+</p>
+<p>サムネイル:<%= image_tag @draft.thumbnail.to_s, alt:"#{@draft.thumbnail.to_s}" %></p>
+<p>タイトル:<%= @draft.title %></p>
+<p>概要:<%= @draft.abstract %></p>
+<p>本文:<%= markdown(@draft.body) %></p>

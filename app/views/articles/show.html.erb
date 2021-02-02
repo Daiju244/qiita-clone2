@@ -6,6 +6,12 @@
     <p><%= link_to "記事を削除する", article_path, method: "delete" %></p>
 <% end %>
 
+<p>タグ:
+  <% TagArticle.where(article: @article.id).each do|t| %>
+    <%= link_to t.tag.name, tag_path(t.tag.id) %>
+  <% end %>
+</p>
+
 <p>サムネイル:<%= @article.thumbnail%></p>
 <p>タイトル:<%= @article.title%></p>
 <p>概要:<%= @article.abstract%></p>

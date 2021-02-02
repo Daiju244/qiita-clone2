@@ -2,14 +2,20 @@
 article"s"_pathならcreateのアクションが起動され、article_pathならupdateアクションが起動されます。newはcreateと、editはupdateと対応させる必要があるので、このような分岐が必要なのです。
 さて、_form.html.erbを作成しましたが、これが「部分テンプレート」と呼ばれるファイルです。あとは、この部分テンプレートをnew、editそれぞれのビューから読み込む必要があります。new、editの中身をそれぞれ白紙にして、以下のコードを貼り付けてください。 %>
 
-<% if "#{controller.controller_name}##{controller.action_name}" == "articles#new"%>
-  <% actionPath = articles_path%>
-<% elsif "#{controller.controller_name}##{controller.action_name}" == "articles#edit"%>
-  <% actionPath = article_path%>
+<%# まず1行目では、今までアクションの分岐に使っていた"#{controller.controller_name}##{controller.action_name}"という記述がちょっと冗長になってきたので、actionNameという変数にまとめました。また、3~10行目ではarticles#create、articles#update、drafts#updateの各アクションのパスをactionPathという変数に代入し、これを13行目のform_withでurl:actionPathとして呼び出しています。 %>
+<% actionName = "#{controller.controller_name}##{controller.action_name}" %>
+
+<% if actionName == "articles#new" %>
+  <% actionPath = articles_path %>
+<% elsif actionName == "articles#edit" %>
+  <% actionPath = article_path %>
+<% elsif actionName == "drafts#edit" %>
+  <% actionPath = draft_path %>
+  <% @article = @draft %>
 <% end %>
 
-<div id="header" action="<%= "#{controller.controller_name}##{controller.action_name}" %>" <% if "#{controller.controller_name}##{controller.action_name}" == "articles#edit" %>thumbnail ="<%= @article.thumbnail%>"<% end %>></div>
-<%= form_with model: @article, url: actionPath do |f| %>
+<div id="header" action="<%= actionName %>" <% if actionName == "articles#edit" || actionName == "drafts#edit" %>thumbnail ="<%= @article.thumbnail%>"<% end %>></div>
+<%= form_with model: @article, url: actionPath, id: "article_form" do |f| %>
   <div class="top-wrapper">
     <label>
       <div class="thumbnail">サムネ画像を選択</div>
@@ -38,6 +44,13 @@ article"s"_pathならcreateのアクションが起動され、article_pathな�
         </label>
       <% end %>
     <% end %>
+
+    <%# 8行目、37~42行目を修正しました。8行目は、この後のJavaScriptの処理で必要なので"article_form"というidを追加しています。また、37~42行目の修正によって下書き保存ボタンが生成されます。 %>
+    <div class="submit-btn">
+      <% if "#{controller.controller_name}##{controller.action_name}" == "articles#new" %>
+        <%= f.submit "下書き保存" , id: "draft" %>
+      <% end %>
     <%= f.submit "投稿する" %>
+    </div>
   </div>
 <% end %>

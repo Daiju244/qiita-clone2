@@ -1,0 +1,5 @@
+<h2>下書き一覧</h2>
+
+<% Draft.where(user_id: current_user.id).each do |draft| %>
+  <p><%= link_to draft.title, draft_path(draft.id)%></p>
+<% end %>

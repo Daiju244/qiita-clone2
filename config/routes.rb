@@ -15,6 +15,12 @@ Rails.application.routes.draw do
     collection do
       post "markdown"
       # post "set_blob"
+      # 15行目を追加しました。今回はsearchという自作アクションを使います。続いて、コントローラを編集します。
+      post "search"
+      get "set_draft"
     end
   end
+  # 17行目を追加しました。tagモデルについてのshowアクションを使ってタグ検索機能を作ります。という事で、対応するコントローラが必要になったので作成します。
+  resources :drafts, except: [:new, :create]
+  resources :tags, only: :show
 end
