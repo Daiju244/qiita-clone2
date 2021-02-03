@@ -7,7 +7,7 @@
 <% end %>
 
 <p>タグ:
-  <% TagArticle.where(article: @article.id).each do|t| %>
+  <% TagArticle.where(article: @article.id).each do |t| %>
     <%= link_to t.tag.name, tag_path(t.tag.id) %>
   <% end %>
 </p>
@@ -15,4 +15,17 @@
 <p>サムネイル:<%= @article.thumbnail%></p>
 <p>タイトル:<%= @article.title%></p>
 <p>概要:<%= @article.abstract%></p>
-<p>本文:<%= @article.body%></p>
+<%# <p>本文:<%= @article.body%></p> %>
+<p>本文:<%= markdown(@article.body) %></p>
+
+<%# 19行目で未いいねの場合といいね済みの場合の処理を分けています。また、24行目では@article.likes.countという記述によっていいね数を表示しています。 %>
+<% if user_signed_in? %>
+  <button id="like-button" action="<%= "/articles/#{@article.id}/like" %>">
+    <% if Like.find_by(user: current_user.id, article: @article.id) == nil %>
+      <span id="like-text">いいね！</span>
+    <% else %>
+      <span id="like-text">いいね済</span>
+    <% end %>
+    <span id="like-number"><%= @article.likes.count %></span>
+  </button>
+<% end %>

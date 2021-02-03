@@ -2,11 +2,11 @@ class ArticlesController < ApplicationController
   
   # showアクションで誰かが記事を閲覧した際、impressionsテーブルにカラムが生成され、PV数がカウントされるようになります。uniqueという記述は、同じ人が何度も記事を閲覧した際に閲覧数が増えてしまうのを防ぐための記述です。インターネットに接続されているパソコンなどの端末に1つ1つ割り当てられている「IPアドレス」というものを利用し、それが同一である場合はカラムを追加しない、という内部処理が行われています。
 
-  # 閲覧数が1増えました！何度か繰り返し閲覧しても1のままなので、IPアドレスによる集計制限が無事に動作していることが分かります。それでは、集計制限を解除するとどうなるか、今一度実験してみましょう。articlesコントローラに先ほど追加した記述を、以下のように書き換えます。  
+  # 閲覧数が1増えました！何度か繰り返し閲覧しても1のままなので、IPアドレスによる集計制限が無事に動作していることが分かります。それでは、集計制限を解除するとどうなるか、今一度実験してみましょう。articlesコントローラに先ほど追加した記述を、以下のように書き換えます。
 
   impressionist actions: [:show], unique: [:impressionable_id, :ip_address]
   # impressionist actions: [:show]
-  before_action :set_article, only: [:show, :edit, :update, :destroy]
+  before_action :set_article, only: [:show, :edit, :update, :destroy, :like]
 
     # 4~5行目はdraftsテーブルに関する新規レコード生成の記述です。そして6行目はcreateの処理を下書き保存の場合と新規投稿の場合で分けるための記述です。では、続けてarticles#newのビューに下書き保存ボタンを追加しましょう。
     def new
@@ -17,7 +17,7 @@ class ArticlesController < ApplicationController
       $draft = false
       $blob = []
     end
-  
+
     def create
       if $draft
         targetModel = {main: Draft,   tag: Dtag, inter: TagDraft,   column: {main: "draft_id",   tag: "dtag_id"}, redirect: drafts_path}
@@ -102,7 +102,16 @@ class ArticlesController < ApplicationController
     def search
       return nil if params[:search] == ""
       @articles = Article.where(["title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%"])
-  end
+    end
+
+    # 2行目の条件分岐は「いいね済みかどうか」を判断しています。likesテーブルにそのユーザのレコードが存在すればいいね済みなので、存在しない場合という意味で条件を「レコード == nil」と書いています。未いいねの場合は3行目でlikesテーブルのレコードを作成し、いいね済みであれば逆にレコードを削除します。
+    def like
+      if Like.find_by(article_id: @article.id, user_id: current_user.id) == nil
+        Like.create(article_id: @article.id, user_id: current_user.id)
+      else
+        Like.find_by(article_id: @article.id, user_id: current_user.id).destroy
+      end
+    end
 
 
     # この部分でやっているのは「JavaScriptからユーザが入力した内容を受け取る」という部分です。
@@ -116,9 +125,9 @@ class ArticlesController < ApplicationController
     # 6行目を追加し、25行目にimages_attributes: [:image, :_destroy, :id]という記述を追加しました。これらもfields_forを使うために必要な記述になります。
     #   params[:article].permit(:title, :thumbnail, :abstract, :body, images_attributes: [image, :_destroy, :id]).merge(user_id: current_user.id)
     end
-  
+
     def set_article
       @article = Article.find(params[:id])
     end
-  
+
   end
