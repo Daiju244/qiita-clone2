@@ -1,6 +1,13 @@
 class ArticlesController < ApplicationController
-    before_action :set_article, only: [:show, :edit, :update, :destroy]
   
+  # showアクションで誰かが記事を閲覧した際、impressionsテーブルにカラムが生成され、PV数がカウントされるようになります。uniqueという記述は、同じ人が何度も記事を閲覧した際に閲覧数が増えてしまうのを防ぐための記述です。インターネットに接続されているパソコンなどの端末に1つ1つ割り当てられている「IPアドレス」というものを利用し、それが同一である場合はカラムを追加しない、という内部処理が行われています。
+
+  # 閲覧数が1増えました！何度か繰り返し閲覧しても1のままなので、IPアドレスによる集計制限が無事に動作していることが分かります。それでは、集計制限を解除するとどうなるか、今一度実験してみましょう。articlesコントローラに先ほど追加した記述を、以下のように書き換えます。  
+
+  impressionist actions: [:show], unique: [:impressionable_id, :ip_address]
+  # impressionist actions: [:show]
+  before_action :set_article, only: [:show, :edit, :update, :destroy]
+
     # 4~5行目はdraftsテーブルに関する新規レコード生成の記述です。そして6行目はcreateの処理を下書き保存の場合と新規投稿の場合で分けるための記述です。では、続けてarticles#newのビューに下書き保存ボタンを追加しましょう。
     def new
       @article = Article.new

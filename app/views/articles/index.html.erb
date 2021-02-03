@@ -10,3 +10,14 @@
 <% else %>
   <p><%= link_to "新規ユーザ登録", new_user_registration_path %></p>
 <% end %>
+
+<h2>よく読まれている記事</h2>
+<% Article.all.sort_by{|a| a.impressions.size}.reverse.first(5).each.with_index(1) do |article,i| %>
+  <p><%= link_to "#{i}位 #{article.title} 閲覧数:#{article.impressions.size}", article_path(article.id) %></p>
+<% end %>
+
+  <%# 12行目にarticle.impression.sizeとありますが、これがPV数を表示するための記述です。この記述によって、以下のように閲覧数を表示することができます。 %>
+  <h2>記事一覧</h2>
+  <% Article.all.each do |article| %>
+    <p><%= link_to "#{article.title} 閲覧数:#{article.impressions.size}", article_path(article.id) %></p>
+<% end %>

@@ -2,16 +2,36 @@
 // 4~8行目の記述によってコントローラのmarkdownメソッドが起動し、markdownメソッドが起動するとmarkdown.json.builderが起動してjsonの中身をJavaScriptに渡し、そしてJavaScriptの9~11行目でプレビューにマークダウン変換された内容を反映する、という流れになっています。
 document.addEventListener("turbolinks:load", function(){
   // これで画像を挿入ボタンが復活です。続けて、コントローラのeditアクションを作成しましょう。
+
+    // 3~8行目を追加、14行目・40~41行目を編集しました。3~8行目では、articlesコントローラとdraftsコントローラとで内容が変化するtargetModelという変数を定義しています。このtargetModelを14行目・40~41行目で使用することにより、画像の入力欄をarticlesとdraftsで分けることができます。
     $(function(){
-      if($("#header").attr("action") == "articles#edit"){
+      var actionName = $("#header").attr("action");
+      if(actionName == "articles#new" || actionName == "articles#edit"){
+        var targetModel = "article";
+      }else if(actionName == "drafts#edit"){
+        var targetModel = "draft";
+      }
+      if(actionName == "articles#edit" || actionName == "drafts#edit"){
         $(".thumbnail").css("background-image",`url(${$("#header").attr("thumbnail")})`);
         $(".bottom-wrapper").prepend(`
           <label class="image_fields">
             <div class="image-button">画像を挿入</div>
-            <input type="file" name="article[images_attributes][0][image]" id="article_images_attributes_0_image">
+            <input type="file" name="${targetModel}[images_attributes][0][image]" id="${targetModel}_images_attributes_0_image">
           </label>
         `);
       }
+      // if($("#header").attr("action") == "articles#edit"){
+      //   $(".thumbnail").css("background-image",`url(${$("#header").attr("thumbnail")})`);
+      //   $(".bottom-wrapper").prepend(`
+      //     <label class="image_fields">
+      //       <div class="image-button">画像を挿入</div>
+      //       <input type="file" name="draft[images_attributes][0][image]" id="draft_images_attributes_0_image">
+      //     </label>
+      //   `);
+      // }
+
+      // しかし、この記述はarticlesコントローラのための記述なので、これをdraftsコントローラ用に修正する必要があります
+      // <input type="file" name="article[images_attributes][0][image]" id="article_images_attributes_0_image">
 
       $(".body").on("keyup", function(){
         $.ajax({
@@ -45,6 +65,10 @@ document.addEventListener("turbolinks:load", function(){
         // if($("#header").attr("action") == "articles#edit"){
         //   $(".thumbnail").css("background-image",`url(${$("#header").attr("thumbnail")})`);
         // }
+
+        // このtargetModelを14行目・40~41行目で使用することにより、画像の入力欄をarticlesとdraftsで分けることができます
+        // $(this).attr("for", `${targetModel}_images_attributes_${targetIndex}_image`);
+        // $(this).append(`<input type="file" name="${targetModel}[images_attributes][${targetIndex}][image]" id="${targetModel}_images_attributes_${targetIndex}_image">`);
 
         // 46~53行目を追加しました。まず46行目で下書きボタンのクリックイベントを拾います。下書きボタンがクリックされると、本来であればすぐにフォームが送信され、articles#createが実行されてしまいます。しかし、このままarticles#createが実行されると、記事が投稿されてしまい下書き保存できません。なので、ボタンがクリックされた直後に「フォームの送信を阻止」する必要があります。47行目の「e.preventDefault()」が、フォーム送信を阻止するための記述です。
         // 48~52行目では非同期通信を使ってset_draftという自作メソッドを実行します。set_draftはまだ定義していませんが、このあと「処理を分岐させるためのメソッド」として作成します。そしてこの実行後、51行目の記述によってフォームを送信します。
