@@ -113,6 +113,25 @@ class ArticlesController < ApplicationController
       end
     end
 
+    # 3行目のContactMailer.send_contactという記述で先ほど定義したcontact_mailer.rbのsend_contactメソッドを呼び出せます。続けて、各paramsをsend_mailメソッドに与えるために、form_withをnew_mailのビューに定義しましょう。
+    # def send_mail
+    #   if(params[:name] != "" && params[:email] != "" && params[:body] != "")
+    #     ContactMailer.send_contact(params[:name], params[:email], params[:body]).deliver
+    #   else
+    #     render :new_mail
+    #   end
+    # end
+
+    # def show_card
+    #   card = Card.find_by(user_id: current_user.id)
+    #   if card.blank?
+    #     redirect_to :new
+    #   else
+    #   Payjp.api_key = Rails.application.credentials.payjp[:secret_key]
+    #   customer = Payjp::Customer.retrieve(card.customer_id)
+    #   @default_card_information = Payjp::Customer.retrieve(card.customer_id).cards.data[0]
+    #   end
+    # end
 
     # この部分でやっているのは「JavaScriptからユーザが入力した内容を受け取る」という部分です。
     def markdown

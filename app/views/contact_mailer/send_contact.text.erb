@@ -1,0 +1,6 @@
+<%= "#{@sender[:name]}さん(#{@sender[:mailaddress]})からのメール" %>
+<%= "#{@sender[:body]}" %>
+<%= "送信日:#{$date}" %>
+
+<p>お問い合わせありがとうございました</p>
+<p><%= link_to "トップページに戻る", root_path %></p>

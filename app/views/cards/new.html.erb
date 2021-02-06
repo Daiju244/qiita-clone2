@@ -1,0 +1,10 @@
+<h2>クレジットカード登録</h2>
+
+// 各入力欄にvalueという記述がありますが、これは入力欄に初期値を持たせるための記述です。今回、テスト用のカード情報を入力するので常にこの入力内容で動作確認をしましょう。ちなみに、カード番号に入力されている4242...という番号はpayjpが用意してくれているテスト番号です。こちらにテストカード番号の一覧が載っているので、興味があれば見てみてください。
+<%= form_with model: @card, url: cards_path do |f| %>
+  <div class="field">有効期限:年<br><%= f.text_field :exp_year, maxlength: 2, value:"30" %></div>
+  <div class="field">有効期限:月<br><%= f.text_field :exp_month, maxlength: 2, value:"01" %></div>
+  <div class="field">クレジットカード番号<br><%= f.text_field :number, maxlength: 16, value:"4242424242424242" %></div>
+  <div class="field">セキュリティコード<br><%= f.text_field :cvc, maxlength: 4, value:"111" %></div>
+  <div id="card_submit"><%= f.submit "送信" %></div>
+<% end %>

@@ -18,6 +18,8 @@ Rails.application.routes.draw do
       # 15行目を追加しました。今回はsearchという自作アクションを使います。続いて、コントローラを編集します。
       post "search"
       get "set_draft"
+      # get  "new_mail"
+      # post "send_mail"
     end
 
     # 18~20行目を追加しました。12~17行目のcollection do~endとは異なり、member do~endという記述を使います。member do~endは、collection do~endと異なり、params[:id]を受け取れます。
@@ -32,4 +34,9 @@ Rails.application.routes.draw do
   # 17行目を追加しました。tagモデルについてのshowアクションを使ってタグ検索機能を作ります。という事で、対応するコントローラが必要になったので作成します。
   resources :drafts, except: [:new, :create]
   resources :tags, only: :show
+  resources :cards,  only:   [:new, :create, :destroy] do
+    collection do
+      get "show_card"
+    end
+  end
 end
